@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: auth-service
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: group_id
+      auto-offset-reset: earliest
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth-service-db
+    username: postgres
+    password: 12345
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.id.new_generator_mappings: true
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+jwt:
+  secret: 42244938548A0C2C0D9C78995F3A3430C17AB5B206C4DBF1E477A08E47119A99
+  expiration:
+    minutes: 300
+
+server:
+  port: 8087
+  servlet:
+    context-path: /
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
