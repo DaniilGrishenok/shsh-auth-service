@@ -1,7 +1,7 @@
 package com.shsh.auth_service_social_network.service;
 
-import com.shsh.auth_service_social_network.dto.JwtRequest;
 import com.shsh.auth_service_social_network.dto.JwtResponse;
+import com.shsh.auth_service_social_network.dto.LoginRequest;
 import com.shsh.auth_service_social_network.dto.RegistrationUserDto;
 import com.shsh.auth_service_social_network.dto.UserRegistrationEvent;
 import com.shsh.auth_service_social_network.exceptions.AppError;
@@ -30,12 +30,12 @@ public class UserService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByUsername(String email) {
+        return userRepository.findByEmail(email);
     }
 
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
+    public boolean existsByUsername(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public void save(User user) {
@@ -69,17 +69,17 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<?> authenticateUser(JwtRequest authRequest) {
+    public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         } catch (BadCredentialsException e) {
-            log.error("Invalid login credentials for user: {}", authRequest.getUsername());
+            log.error("Invalid login credentials for user: {}", loginRequest.getEmail());
             return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(), "Invalid credentials"), HttpStatus.UNAUTHORIZED);
         }
 
-        UserDetails userDetails = findByUsername(authRequest.getUsername());
-        User user = findByUsername(authRequest.getUsername());
+        UserDetails userDetails = findByUsername(loginRequest.getEmail());
+        User user = findByUsername(loginRequest.getEmail());
         String token = jwtUtils.generateJwtToken(userDetails.getUsername(), user.getEmail(), String.valueOf(user.getId()));
 
         return ResponseEntity.ok(new JwtResponse(token));

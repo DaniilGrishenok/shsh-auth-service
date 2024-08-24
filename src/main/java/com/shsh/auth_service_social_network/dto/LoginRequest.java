@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class JwtRequest {
-    private String username;
+public class LoginRequest {
+
+    private String email;
     private String password;
 }
