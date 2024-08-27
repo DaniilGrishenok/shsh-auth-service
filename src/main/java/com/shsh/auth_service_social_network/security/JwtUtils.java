@@ -36,7 +36,22 @@ public class JwtUtils {
     public String getUsernameFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
+    // Метод для генерации refresh token
+    public String generateRefreshToken(String username, String email, String id) {
+        // Например, срок действия refresh token в 7 дней
+        int refreshTokenExpirationMinutes = 7 * 24 * 60;
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + refreshTokenExpirationMinutes * 60000L);
 
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("email", email)
+                .setId(id)
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
+                .compact();
+    }
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

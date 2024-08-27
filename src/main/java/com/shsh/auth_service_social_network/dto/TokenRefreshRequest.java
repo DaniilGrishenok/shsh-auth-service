@@ -2,11 +2,11 @@ package com.shsh.auth_service_social_network.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-public class JwtResponse {
-    private String token;
+public class TokenRefreshRequest {
     private String refreshToken;
 }

@@ -77,12 +77,43 @@ public class UserService {
             log.error("Invalid login credentials for user: {}", loginRequest.getEmail());
             return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(), "Invalid credentials"), HttpStatus.UNAUTHORIZED);
         }
-
         UserDetails userDetails = findByUsername(loginRequest.getEmail());
         User user = findByUsername(loginRequest.getEmail());
-        String token = jwtUtils.generateJwtToken(userDetails.getUsername(), user.getEmail(), String.valueOf(user.getId()));
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        String token = jwtUtils.generateJwtToken(
+                userDetails.getUsername(),
+                user.getEmail(),
+                String.valueOf(user.getId())
+        );
+        String refreshToken = jwtUtils.generateRefreshToken(
+                userDetails.getUsername(),
+                user.getEmail(),
+                String.valueOf(user.getId())
+        );
+        return ResponseEntity.ok(new JwtResponse(token, refreshToken));
     }
+
+    public ResponseEntity<?> refreshJwtToken(String refreshToken) {
+        if (!jwtUtils.validateJwtToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
+        }
+        String username = jwtUtils.getUsernameFromJwtToken(refreshToken);
+        User user = findByUsername(username);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
+        }
+        String newJwtToken = jwtUtils.generateJwtToken(
+                user.getUsername(),
+                user.getEmail(),
+                String.valueOf(user.getId())
+        );
+
+        // Используем существующий refreshToken, не генерируя новый
+        JwtResponse jwtResponse = new JwtResponse(newJwtToken, refreshToken);
+
+        return ResponseEntity.ok(jwtResponse);
+    }
+
+
 }
 
