@@ -5,6 +5,7 @@ import com.shsh.auth_service_social_network.dto.RegistrationUserDto;
 import com.shsh.auth_service_social_network.dto.TokenRefreshRequest;
 import com.shsh.auth_service_social_network.exceptions.AppError;
 import com.shsh.auth_service_social_network.exceptions.PasswordMismatchException;
+import com.shsh.auth_service_social_network.service.JwtService;
 import com.shsh.auth_service_social_network.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
-
+    private final JwtService jwtService;
     @PostMapping("/registration")
     public ResponseEntity<?> register(@RequestBody RegistrationUserDto registrationRequest) {
         return userService.registerNewUser(registrationRequest);
@@ -31,7 +32,7 @@ public class AuthController {
     }
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
-        return userService.refreshJwtToken(request.getRefreshToken());
+        return jwtService.refreshJwtToken(request.getRefreshToken());
     }
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<AppError> handlePasswordMismatchException(PasswordMismatchException ex) {

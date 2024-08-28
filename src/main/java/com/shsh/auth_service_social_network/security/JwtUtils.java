@@ -16,7 +16,7 @@ public class JwtUtils {
     @Value("${jwt.expiration.minutes}")
     private int jwtExpirationMinutes;
 
-    public String generateJwtToken(String username, String email, String id) {
+    public String generateJwtToken( String email, String id) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationMinutes * 60000L);
 
@@ -24,8 +24,7 @@ public class JwtUtils {
         System.out.println("Token expires at: " + expiryDate);
 
         return Jwts.builder()
-                .setSubject(username)
-                .claim("email", email)
+                .setSubject(email)
                 .setId(id)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
@@ -33,19 +32,18 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getUsernameFromJwtToken(String token) {
+    public String getEmailFromJwtToken(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
     // Метод для генерации refresh token
-    public String generateRefreshToken(String username, String email, String id) {
+    public String generateRefreshToken( String email, String id) {
         // Например, срок действия refresh token в 7 дней
         int refreshTokenExpirationMinutes = 7 * 24 * 60;
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + refreshTokenExpirationMinutes * 60000L);
 
         return Jwts.builder()
-                .setSubject(username)
-                .claim("email", email)
+                .setSubject(email)
                 .setId(id)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)

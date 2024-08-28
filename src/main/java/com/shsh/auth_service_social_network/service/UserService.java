@@ -7,6 +7,7 @@ import com.shsh.auth_service_social_network.dto.UserRegistrationEvent;
 import com.shsh.auth_service_social_network.exceptions.AppError;
 import com.shsh.auth_service_social_network.exceptions.PasswordMismatchException;
 import com.shsh.auth_service_social_network.security.JwtUtils;
+import jakarta.persistence.Id;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,9 +27,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final KafkaProducer kafkaProducer;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
+    private final IdGenerator idGenerator;
 
     public User findByUsername(String email) {
         return userRepository.findByEmail(email);
@@ -48,15 +49,13 @@ public class UserService {
             if (!registrationRequest.getPassword().equals(registrationRequest.getConfirmPassword())) {
                 throw new PasswordMismatchException("Password and Confirm Password do not match");
             }
-            User user = new User();
+            User user = new User(idGenerator.generateUserId());
             user.setEmail(registrationRequest.getEmail());
             user.setUsername(registrationRequest.getUsername());
             user.setPassword(registrationRequest.getPassword());
 
             save(user);
 
-            UserRegistrationEvent event = new UserRegistrationEvent(user.getId(), user.getUsername(), user.getEmail());
-            kafkaProducer.sendMessage(event);
 
             return ResponseEntity.ok("User registered successfully");
         } catch (PasswordMismatchException e) {
@@ -81,38 +80,17 @@ public class UserService {
         User user = findByUsername(loginRequest.getEmail());
 
         String token = jwtUtils.generateJwtToken(
-                userDetails.getUsername(),
                 user.getEmail(),
                 String.valueOf(user.getId())
         );
         String refreshToken = jwtUtils.generateRefreshToken(
-                userDetails.getUsername(),
                 user.getEmail(),
                 String.valueOf(user.getId())
         );
         return ResponseEntity.ok(new JwtResponse(token, refreshToken));
     }
 
-    public ResponseEntity<?> refreshJwtToken(String refreshToken) {
-        if (!jwtUtils.validateJwtToken(refreshToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid refresh token");
-        }
-        String username = jwtUtils.getUsernameFromJwtToken(refreshToken);
-        User user = findByUsername(username);
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found");
-        }
-        String newJwtToken = jwtUtils.generateJwtToken(
-                user.getUsername(),
-                user.getEmail(),
-                String.valueOf(user.getId())
-        );
 
-        // Используем существующий refreshToken, не генерируя новый
-        JwtResponse jwtResponse = new JwtResponse(newJwtToken, refreshToken);
-
-        return ResponseEntity.ok(jwtResponse);
-    }
 
 
 }

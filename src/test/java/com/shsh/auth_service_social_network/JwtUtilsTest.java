@@ -37,7 +37,7 @@ class JwtUtilsTest {
         String email = "test@example.com";
         String id = "12345";
 
-        String token = jwtUtils.generateJwtToken(username, email, id);
+        String token = jwtUtils.generateJwtToken(email, id);
 
         assertNotNull(token, "Token should not be null");
 
@@ -59,7 +59,7 @@ class JwtUtilsTest {
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
 
-        String extractedUsername = jwtUtils.getUsernameFromJwtToken(token);
+        String extractedUsername = jwtUtils.getEmailFromJwtToken(token);
 
         assertEquals(username, extractedUsername, "Extracted username should match");
     }

@@ -13,8 +13,7 @@ import java.util.UUID;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private String id;
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -22,6 +21,11 @@ public class User implements UserDetails {
     private String username;
 
     private String password;
+
+    public User(String id){
+        this.id = id;
+
+    }
 
 
     @Override
