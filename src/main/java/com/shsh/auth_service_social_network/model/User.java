@@ -22,9 +22,11 @@ public class User implements UserDetails {
 
     private String password;
 
-    public User(String id){
-        this.id = id;
+    public User() {
+    }
 
+    public User(String id) {
+        this.id = id;
     }
 
 

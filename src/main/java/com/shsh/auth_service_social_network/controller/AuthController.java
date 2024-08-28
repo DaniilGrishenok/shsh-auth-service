@@ -5,6 +5,7 @@ import com.shsh.auth_service_social_network.dto.RegistrationUserDto;
 import com.shsh.auth_service_social_network.dto.TokenRefreshRequest;
 import com.shsh.auth_service_social_network.exceptions.AppError;
 import com.shsh.auth_service_social_network.exceptions.PasswordMismatchException;
+import com.shsh.auth_service_social_network.model.User;
 import com.shsh.auth_service_social_network.service.JwtService;
 import com.shsh.auth_service_social_network.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/auth")
