@@ -32,9 +32,14 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         return userService.authenticateUser(loginRequest);
     }
+
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request) {
         return jwtService.refreshJwtToken(request.getRefreshToken());
+    }
+    @GetMapping("/test")
+    public ResponseEntity<?> refreshTokenу() {
+        return ResponseEntity.ok("Работает");
     }
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<AppError> handlePasswordMismatchException(PasswordMismatchException ex) {

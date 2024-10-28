@@ -14,7 +14,7 @@ public class IdGenerator {
                 .putLong(uuid.getMostSignificantBits())
                 .putLong(uuid.getLeastSignificantBits())
                 .array();
-        return "U" + Base64.getUrlEncoder().withoutPadding().encodeToString(uuidBytes);
+        return "U-" + Base64.getUrlEncoder().withoutPadding().encodeToString(uuidBytes);
     }
 
 }

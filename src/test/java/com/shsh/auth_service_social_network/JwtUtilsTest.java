@@ -33,27 +33,27 @@ class JwtUtilsTest {
 
     @Test
     void testGenerateJwtToken() {
-        String username = "testUser";
         String email = "test@example.com";
         String id = "12345";
 
+        // Генерация токена с email и id
         String token = jwtUtils.generateJwtToken(email, id);
 
         assertNotNull(token, "Token should not be null");
 
         Claims claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody();
 
-        assertEquals(username, claims.getSubject(), "Username should match");
-        assertEquals(email, claims.get("email"), "Email should match");
+        assertEquals(email, claims.getSubject(), "Email should match"); // Проверяем subject
         assertEquals(id, claims.getId(), "ID should match");
 
         Date now = new Date();
         assertTrue(claims.getExpiration().after(now), "Expiration date should be in the future");
     }
 
+
     @Test
     void testGetUsernameFromJwtToken() {
-        String username = "testUser";
+        String username = "test@example.com";
         String token = Jwts.builder()
                 .setSubject(username)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
@@ -67,7 +67,7 @@ class JwtUtilsTest {
     @Test
     void testValidateJwtToken_ValidToken() {
         String token = Jwts.builder()
-                .setSubject("testUser")
+                .setSubject("test@example.com")
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
 
@@ -91,7 +91,7 @@ class JwtUtilsTest {
         Date expiredDate = new Date(now.getTime() - 1000); // 1 second in the past
 
         String expiredToken = Jwts.builder()
-                .setSubject("testUser")
+                .setSubject("test@example.com")
                 .setExpiration(expiredDate)
                 .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();

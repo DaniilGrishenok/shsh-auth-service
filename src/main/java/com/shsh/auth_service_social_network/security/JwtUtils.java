@@ -33,8 +33,11 @@ public class JwtUtils {
     }
 
     public String getEmailFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        String email = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+        System.out.println("Extracted email from token: " + email);
+        return email;
     }
+
     // Метод для генерации refresh token
     public String generateRefreshToken( String email, String id) {
         // Например, срок действия refresh token в 7 дней
