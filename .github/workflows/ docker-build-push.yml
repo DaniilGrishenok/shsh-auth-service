@@ -24,7 +24,7 @@ jobs:
 
       - name: Build the Docker image
         run: |
-          ddocker buildx build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/auth-service-shsh:latest .
+          docker buildx build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/auth-service-shsh:latest .
 
 
       - name: Push the Docker image
