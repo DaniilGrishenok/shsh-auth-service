@@ -35,7 +35,7 @@ public class JwtService {
 
         // Генерация нового JWT токена
         String newJwtToken = jwtUtils.generateJwtToken(user.getEmail(), String.valueOf(user.getId()));
-        JwtResponse jwtResponse = new JwtResponse(newJwtToken, refreshToken);
+        JwtResponse jwtResponse = new JwtResponse(newJwtToken, refreshToken, user.getId());
 
         log.info("New JWT token generated for user: {}", email);
 

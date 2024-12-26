@@ -117,7 +117,7 @@ public class UserService {
                 user.getEmail(),
                 String.valueOf(user.getId())
         );
-        return ResponseEntity.ok(new JwtResponse(token, refreshToken));
+        return ResponseEntity.ok(new JwtResponse(token, refreshToken, user.getId() ));
     }
 
 
