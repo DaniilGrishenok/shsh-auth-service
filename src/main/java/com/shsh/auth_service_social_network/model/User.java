@@ -17,7 +17,7 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false)
     private String email;
-
+    @Column(unique = true, nullable = false)
     private String username;
 
     private String password;
@@ -44,5 +44,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
-
+    public String getRealUsername() {
+        return username;
+    }
 }

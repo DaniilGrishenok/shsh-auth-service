@@ -52,8 +52,11 @@ public class UserService {
             }
             User user = new User(idGenerator.generateUserId());
             user.setEmail(registrationRequest.getEmail());
-            user.setUsername(registrationRequest.getUsername());
+            user.setUsername(registrationRequest.getUsername()); // Проверьте это
             user.setPassword(registrationRequest.getPassword());
+            log.info("Registering user: id={}, email={}, username={}",
+                    user.getId(), user.getEmail(), user.getUsername());
+
 
             if (!createUserProfile(user)) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -76,10 +79,11 @@ public class UserService {
         CreateUserProfileRequest profileRequest = new CreateUserProfileRequest();
         profileRequest.setId(user.getId());
         profileRequest.setEmail(user.getEmail());
-        profileRequest.setUsername(user.getUsername());
+        profileRequest.setUsername(user.getRealUsername());
 
         try {
             String userProfileServiceUrl = "http://USER-PROFILE-SERVICE/user/profile/create";
+            log.info("Creating user profile: {}", profileRequest);
             ResponseEntity<Void> profileResponse =
                     restTemplate.postForEntity(
                     userProfileServiceUrl,

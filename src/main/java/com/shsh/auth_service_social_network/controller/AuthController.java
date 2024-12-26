@@ -25,6 +25,9 @@ public class AuthController {
     private final JwtService jwtService;
     @PostMapping("/registration")
     public ResponseEntity<?> register(@RequestBody RegistrationUserDto registrationRequest) {
+        log.info("Received registration request: email={}, username={}",
+                registrationRequest.getEmail(), registrationRequest.getUsername());
+
         return userService.registerNewUser(registrationRequest);
     }
 
