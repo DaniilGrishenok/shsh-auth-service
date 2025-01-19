@@ -21,8 +21,12 @@ public class User implements UserDetails {
     private String username;
 
     private String password;
-
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private boolean isVerifiedEmail = false;
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean isActive = true;
     public User() {
+
     }
 
     public User(String id) {
